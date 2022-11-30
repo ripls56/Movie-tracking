@@ -2,22 +2,67 @@ package com.example.pr7.ui.top;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.pr7.MainActivity;
 import com.example.pr7.databinding.FragmentTopBinding;
+import com.example.pr7.repository.ApiInterface;
+import com.example.pr7.repository.RepositoryBuilder;
+import com.example.pr7.ui.top.models.Film;
+import com.example.pr7.ui.top.models.Top;
+import com.example.pr7.ui.top.recycler.TopAdapter;
+import java.util.ArrayList;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class TopFragment extends Fragment {
 
     private FragmentTopBinding binding;
+    private ApiInterface apiInterface;
+    RecyclerView filmRecycler;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentTopBinding.inflate(inflater, container, false);
+        apiInterface = RepositoryBuilder.buildRequest().create(ApiInterface.class);
 
+        filmRecycler = binding.topRecycler;
+
+        Call<Top> getTopFilms = apiInterface.getTopFilms(1);
+        getTopFilms.enqueue(new Callback<Top>() {
+            @Override
+            public void onResponse(@NonNull Call<Top> call, @NonNull Response<Top> response) {
+                MainActivity.isIndeterminate.set(true);
+                if (response.isSuccessful())
+                {
+                    ArrayList<Film> films = response.body().getFilms();
+                    TopAdapter adapter = new TopAdapter(requireContext(), films);
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                    linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                    filmRecycler.setLayoutManager(linearLayoutManager);
+                    filmRecycler.setAdapter(adapter);
+                    MainActivity.isIndeterminate.set(false);
+                }
+                else
+                {
+                    Toast.makeText(requireContext(), response.errorBody().toString(), Toast.LENGTH_LONG).show();
+                    MainActivity.isIndeterminate.set(false);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Top> call, @NonNull Throwable t) {
+                Toast.makeText(requireContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
         return binding.getRoot();
     }
 

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.example.pr7.databinding.FragmentWaitingBinding;
+import com.example.pr7.repository.RepositoryBuilder;
 
 public class WaitingFragment extends Fragment {
 
@@ -17,6 +18,7 @@ public class WaitingFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentWaitingBinding.inflate(inflater, container, false);
+
 
         return binding.getRoot();
     }
