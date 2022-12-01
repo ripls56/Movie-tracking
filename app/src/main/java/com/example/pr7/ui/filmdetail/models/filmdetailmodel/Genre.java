@@ -1,4 +1,4 @@
-package com.example.pr7.ui.filmdetail.models;
+package com.example.pr7.ui.filmdetail.models.filmdetailmodel;
 
 public class Genre {
     public String getGenre() {
