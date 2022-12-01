@@ -7,17 +7,17 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import com.example.pr7.databinding.FragmentWaitingBinding;
-import com.example.pr7.repository.RepositoryBuilder;
 
-public class WaitingFragment extends Fragment {
+import com.example.pr7.databinding.FragmentPremierBinding;
 
-    private FragmentWaitingBinding binding;
+public class PremierFragment extends Fragment {
+
+    private FragmentPremierBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentWaitingBinding.inflate(inflater, container, false);
+        binding = FragmentPremierBinding.inflate(inflater, container, false);
 
 
         return binding.getRoot();

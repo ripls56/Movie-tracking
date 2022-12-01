@@ -6,10 +6,10 @@
     app:startDestination="@id/navigation_top">
 
     <fragment
-        android:id="@+id/navigation_waiting"
-        android:name="com.example.pr7.ui.waiting.WaitingFragment"
+        android:id="@+id/navigation_premier"
+        android:name="com.example.pr7.ui.waiting.PremierFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_waiting" />
+        tools:layout="@layout/fragment_premier" />
 
     <fragment
         android:id="@+id/navigation_top"
