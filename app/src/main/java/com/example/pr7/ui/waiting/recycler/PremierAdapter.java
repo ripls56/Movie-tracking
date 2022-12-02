@@ -31,7 +31,7 @@ public class PremierAdapter extends RecyclerView.Adapter<PremierAdapter.ViewHold
     @NonNull
     @Override
     public PremierAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.top_item, parent, false);
+        View view = inflater.inflate(R.layout.premier_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -52,8 +52,10 @@ public class PremierAdapter extends RecyclerView.Adapter<PremierAdapter.ViewHold
                 genreString.append(genre.getGenre()).append(", ");
             }
         }
-        holder.filmGenres.setText(String.format("%s%s", genreString.substring(0, 1).toUpperCase(), genreString.substring(1)));
-        holder.filmYear.setText(item.getYear());
+        if (item.getGenres().size() != 0){
+            holder.filmGenres.setText(String.format("%s%s", genreString.substring(0, 1).toUpperCase(), genreString.substring(1)));
+        }
+        holder.filmYear.setText(String.valueOf(item.getYear()));
     }
 
     @Override
@@ -65,19 +67,17 @@ public class PremierAdapter extends RecyclerView.Adapter<PremierAdapter.ViewHold
         final ImageView filmImg;
         final TextView filmName;
         final TextView filmGenres;
-        final TextView filmRating;
         final TextView filmYear;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            filmImg = itemView.findViewById(R.id.topfilms_img);
-            filmName = itemView.findViewById(R.id.topfilms_name);
-            filmGenres = itemView.findViewById(R.id.topfilms_genres);
-            filmRating = itemView.findViewById(R.id.topfilms_rating);
-            filmYear = itemView.findViewById(R.id.topfilms_year);
+            filmImg = itemView.findViewById(R.id.premierfilms_img);
+            filmName = itemView.findViewById(R.id.premierfilms_name);
+            filmGenres = itemView.findViewById(R.id.premierfilms_genres);
+            filmYear = itemView.findViewById(R.id.premierfilms_year);
             itemView.setOnClickListener(view -> {
                 Item item = PremierAdapter.filmArrayList.get(getAbsoluteAdapterPosition());
                 Intent intent = new Intent(view.getContext(), FilmDetail.class);
-                intent.putExtra("filmId", (int)item.getKinopoiskId());
+                intent.putExtra("filmId", item.getKinopoiskId());
                 view.getContext().startActivity(intent);
             });
         }

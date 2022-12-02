@@ -3,6 +3,7 @@ package com.example.pr7.repository;
 import com.example.pr7.ui.filmdetail.models.filmdetailmodel.FilmDetailModel;
 import com.example.pr7.ui.filmdetail.models.videomodel.FilmVideos;
 import com.example.pr7.ui.top.models.Top;
+import com.example.pr7.ui.waiting.models.Premier;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -19,7 +20,7 @@ public interface ApiInterface {
 
     @Headers("X-API-KEY: d5f7d477-adb4-406a-9fb0-079906050c15")
     @GET("premieres")
-    Call<Top> getAwaitFilms(@Query("page") String year, @Query("page") String month);
+    Call<Premier> getAwaitFilms(@Query("year") int year, @Query("month") String month);
 
     @Headers("X-API-KEY: d5f7d477-adb4-406a-9fb0-079906050c15")
     @GET("{id}")
@@ -28,4 +29,6 @@ public interface ApiInterface {
     @Headers("X-API-KEY: d5f7d477-adb4-406a-9fb0-079906050c15")
     @GET("{id}/videos")
     Call<FilmVideos> getVideosByFilmID(@Path("id") int filmId);
+
+
 }
