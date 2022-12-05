@@ -68,22 +68,22 @@ public class PremierFragment extends Fragment {
         });
         if (isDate) {
             btnDateSet.setOnClickListener(view -> {
-                MainActivity.isIndeterminate.set(true);
-                year.set(Integer.parseInt(edtYear.getText().toString()));
-                month.set(Integer.parseInt(edtMonth.getText().toString()));
-                getAwaitFilms(premierRecycler, year.get(), month.get(), monthArrayList);
+                if (errorText.getText().toString().equals("")){
+                    MainActivity.isIndeterminate.set(true);
+                    year.set(Integer.parseInt(edtYear.getText().toString()));
+                    month.set(Integer.parseInt(edtMonth.getText().toString()));
+                    getAwaitFilms(premierRecycler, year.get(), month.get(), monthArrayList);
+                }
             });
-            edtMonthTextChangedListener(edtMonth);
-            edtYearTextChangedListener(edtYear);
+            edtMonthTextChangedListener(edtYear, edtMonth);
+            edtYearTextChangedListener(edtYear, edtMonth);
         }
-
-
 
         return binding.getRoot();
     }
 
     private void getAwaitFilms(RecyclerView premierRecycler, int year, int month, ArrayList<String> monthArrayList) {
-        Call<Premier> getPremierFilms = apiInterface.getAwaitFilms(year, monthArrayList.get(month -1));
+        Call<Premier> getPremierFilms = apiInterface.getAwaitFilms(year, monthArrayList.get(month - 1));
         getPremierFilms.enqueue(new Callback<Premier>() {
             @Override
             public void onResponse(@NonNull Call<Premier> call, @NonNull Response<Premier> response) {
@@ -113,7 +113,7 @@ public class PremierFragment extends Fragment {
         });
     }
 
-    private void edtMonthTextChangedListener(EditText edtMonth) {
+    private void edtMonthTextChangedListener(EditText edtYear, EditText edtMonth) {
         edtMonth.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -122,14 +122,7 @@ public class PremierFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (edtMonth.getText().toString().equals("")) return;
-                int month = Integer.parseInt(edtMonth.getText().toString());
-                if (month > 12){
-                    errorText.setText("Месяц указан не верно");
-                }
-                else{
-                    errorText.setText("");
-                }
+                errorCheck(edtYear, edtMonth);
             }
 
             @Override
@@ -139,7 +132,7 @@ public class PremierFragment extends Fragment {
         });
     }
 
-    private void edtYearTextChangedListener(EditText edtYear) {
+    private void edtYearTextChangedListener(EditText edtYear, EditText edtMonth) {
         edtYear.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -148,18 +141,7 @@ public class PremierFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (edtYear.getText().toString().equals("")) return;
-                GregorianCalendar cal = new GregorianCalendar();
-                cal.setTimeZone(TimeZone.getTimeZone(ZoneId.of("Europe/Moscow")));
-                cal.setTime(new Date());
-                int currentYear = cal.get(Calendar.YEAR);
-                int year = Integer.parseInt(edtYear.getText().toString());
-                if (year < currentYear){
-                    errorText.setText("Год указан не верно");
-                }
-                else{
-                    errorText.setText("");
-                }
+                errorCheck(edtYear, edtMonth);
             }
 
             @Override
@@ -167,6 +149,22 @@ public class PremierFragment extends Fragment {
 
             }
         });
+    }
+
+    private void errorCheck(EditText edtYear, EditText edtMonth) {
+        if (edtYear.getText().toString().equals("") || edtMonth.getText().toString().equals("")) return;
+        int month = Integer.parseInt(edtMonth.getText().toString());
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTimeZone(TimeZone.getTimeZone(ZoneId.of("Europe/Moscow")));
+        cal.setTime(new Date());
+        int currentYear = cal.get(Calendar.YEAR);
+        int year = Integer.parseInt(edtYear.getText().toString());
+        if (year < currentYear || month > 12){
+            errorText.setText("Год или месяц указаны не верно");
+        }
+        else{
+            errorText.setText("");
+        }
     }
 
     @Override

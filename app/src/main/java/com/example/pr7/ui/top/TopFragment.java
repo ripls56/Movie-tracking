@@ -29,6 +29,10 @@ public class TopFragment extends Fragment {
     private FragmentTopBinding binding;
     private ApiInterface apiInterface;
     RecyclerView filmRecycler;
+    private int page = 1;
+    ArrayList<Film> films;
+    TopAdapter adapter;
+    boolean isUpdate = false;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -37,15 +41,15 @@ public class TopFragment extends Fragment {
         apiInterface = RepositoryBuilder.buildRequest().create(ApiInterface.class);
         MainActivity.isIndeterminate.set(true);
         filmRecycler = binding.topRecycler;
-
-        Call<Top> getTopFilms = apiInterface.getTopFilms(1);
+        page = 1;
+        Call<Top> getTopFilms = apiInterface.getTopFilms(page);
         getTopFilms.enqueue(new Callback<Top>() {
             @Override
             public void onResponse(@NonNull Call<Top> call, @NonNull Response<Top> response) {
-                if (response.isSuccessful())
+                if (response.isSuccessful() && response.body() != null)
                 {
-                    ArrayList<Film> films = response.body().getFilms();
-                    TopAdapter adapter = new TopAdapter(requireContext(), films);
+                    films = response.body().getFilms();
+                    adapter = new TopAdapter(requireContext(), films);
                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
                     linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                     filmRecycler.setLayoutManager(linearLayoutManager);
@@ -62,6 +66,38 @@ public class TopFragment extends Fragment {
             @Override
             public void onFailure(@NonNull Call<Top> call, @NonNull Throwable t) {
                 Toast.makeText(requireContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        filmRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE){
+                    page++;
+                    Call<Top> getTop = apiInterface.getTopFilms(page);
+                    getTop.enqueue(new Callback<Top>() {
+                        @Override
+                        public void onResponse(@NonNull Call<Top> call, @NonNull Response<Top> response) {
+                            if (!isUpdate && response.body() != null && response.isSuccessful()){
+                                isUpdate = true;
+                                films.addAll(response.body().getFilms());
+                                adapter.notifyItemRangeChanged(adapter.getItemCount(), films.size());
+                                isUpdate = false;
+                                System.gc();
+                            }
+                            if (!response.isSuccessful()){
+                                Toast.makeText(requireContext(), response.errorBody().toString(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<Top> call, @NonNull Throwable t) {
+                            Toast.makeText(requireContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
             }
         });
         return binding.getRoot();
