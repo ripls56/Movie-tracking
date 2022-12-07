@@ -5,12 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.pr7.MainActivity;
 import com.example.pr7.databinding.FragmentTopBinding;
 import com.example.pr7.repository.ApiInterface;
@@ -20,6 +20,7 @@ import com.example.pr7.ui.top.models.Top;
 import com.example.pr7.ui.top.recycler.TopAdapter;
 
 import java.util.ArrayList;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
