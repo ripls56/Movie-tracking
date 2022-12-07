@@ -70,7 +70,6 @@ public class TopFragment extends Fragment {
         });
 
         filmRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);

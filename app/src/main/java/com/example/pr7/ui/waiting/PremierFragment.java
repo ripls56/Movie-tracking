@@ -68,7 +68,7 @@ public class PremierFragment extends Fragment {
         });
         if (isDate) {
             btnDateSet.setOnClickListener(view -> {
-                if (errorText.getText().toString().equals("")){
+                if (errorText.getText().toString().equals("") && !edtYear.getText().toString().equals("") && !edtMonth.getText().toString().equals("")){
                     MainActivity.isIndeterminate.set(true);
                     year.set(Integer.parseInt(edtYear.getText().toString()));
                     month.set(Integer.parseInt(edtMonth.getText().toString()));
