@@ -7,4 +7,9 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="change_date">Изменить дату</string>
+    <string name="enter_year_and_month">Введите год и месяц премьеры</string>
+    <string name="year">Year</string>
+    <string name="month">Month</string>
+    <string name="watch_premier">Посмотерть кинопремьеры</string>
 </resources>
