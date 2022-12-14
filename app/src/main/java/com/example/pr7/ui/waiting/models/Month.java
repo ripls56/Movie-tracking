@@ -3,9 +3,9 @@ package com.example.pr7.ui.waiting.models;
 import java.util.ArrayList;
 
 public class Month {
-    ArrayList<String> monthList = new ArrayList<>();
+    private static ArrayList<String> monthList = new ArrayList<>();
 
-    public Month(){
+    public static ArrayList<String> getMonthList() {
         monthList.add("JANUARY");
         monthList.add("FEBRUARY");
         monthList.add("MARCH");
@@ -18,9 +18,6 @@ public class Month {
         monthList.add("OCTOBER");
         monthList.add("NOVEMBER");
         monthList.add("DECEMBER");
-    }
-
-    public ArrayList<String> getMonthList() {
         return monthList;
     }
 }

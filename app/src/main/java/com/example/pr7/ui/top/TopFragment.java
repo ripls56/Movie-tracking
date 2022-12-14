@@ -1,6 +1,7 @@
 package com.example.pr7.ui.top;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.pr7.MainActivity;
 import com.example.pr7.databinding.FragmentTopBinding;
@@ -33,6 +35,8 @@ public class TopFragment extends Fragment {
     private int page = 1;
     ArrayList<Film> films;
     TopAdapter adapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private TopViewModel topViewModel;
     boolean isUpdate = false;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -40,35 +44,13 @@ public class TopFragment extends Fragment {
 
         binding = FragmentTopBinding.inflate(inflater, container, false);
         apiInterface = RepositoryBuilder.buildRequest().create(ApiInterface.class);
+        topViewModel = TopViewModel.getInstance();
         MainActivity.isIndeterminate.set(true);
         filmRecycler = binding.topRecycler;
+        swipeRefreshLayout = binding.topSwipeRefresh;
         page = 1;
-        Call<Top> getTopFilms = apiInterface.getTopFilms(page);
-        getTopFilms.enqueue(new Callback<Top>() {
-            @Override
-            public void onResponse(@NonNull Call<Top> call, @NonNull Response<Top> response) {
-                if (response.isSuccessful() && response.body() != null)
-                {
-                    films = response.body().getFilms();
-                    adapter = new TopAdapter(getContext(), films);
-                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-                    linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                    filmRecycler.setLayoutManager(linearLayoutManager);
-                    filmRecycler.setAdapter(adapter);
-                    MainActivity.isIndeterminate.set(false);
-                }
-                else
-                {
-                    Toast.makeText(requireContext(), response.errorBody().toString(), Toast.LENGTH_LONG).show();
-                    MainActivity.isIndeterminate.set(false);
-                }
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<Top> call, @NonNull Throwable t) {
-                Toast.makeText(requireContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+        topViewModel.getTopList(page, getContext(), filmRecycler);
 
         filmRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -99,6 +81,12 @@ public class TopFragment extends Fragment {
                     });
                 }
             }
+        });
+        swipeRefreshLayout.setDistanceToTriggerSync(200);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            swipeRefreshLayout.setRefreshing(true);
+            topViewModel.getTopList(page, getContext(), filmRecycler);
+            swipeRefreshLayout.setRefreshing(false);
         });
         return binding.getRoot();
     }
