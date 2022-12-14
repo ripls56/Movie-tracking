@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.pr7.MainActivity;
@@ -15,7 +17,6 @@ import com.example.pr7.R;
 import com.example.pr7.databinding.FragmentPremierBinding;
 import com.example.pr7.repository.ApiInterface;
 import com.example.pr7.repository.RepositoryBuilder;
-import com.example.pr7.ui.top.DatePickerFragment;
 import com.example.pr7.ui.waiting.models.Item;
 import com.example.pr7.ui.waiting.models.Month;
 import com.example.pr7.ui.waiting.models.Premier;
@@ -30,16 +31,18 @@ public class PremierFragment extends Fragment {
     private ApiInterface apiInterface;
     private FragmentPremierBinding binding;
     DatePickerFragment datePickerFragment;
+    DateViewModel dateViewModel;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        dateViewModel = DateViewModel.getInstance();
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        int year = 0;
-        int month = 0;
-        Bundle bundle = this.getArguments();
-        if (bundle != null) {
-            year = bundle.getInt("year", 2022);
-            month = bundle.getInt("month", 1);
-        }
+        int year = dateViewModel.getYear();
+        int month = dateViewModel.getMonth();
 
         binding = FragmentPremierBinding.inflate(inflater, container, false);
         apiInterface = RepositoryBuilder.buildRequest().create(ApiInterface.class);
@@ -50,7 +53,7 @@ public class PremierFragment extends Fragment {
         datePickerFragment = new DatePickerFragment();
         getAwaitFilms(premierRecycler, year, month, monthArrayList);
         btnDateChange.setOnClickListener(view -> {
-            getParentFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, datePickerFragment).commit();
+            dateViewModel.changeDate(this);
         });
         return binding.getRoot();
     }
@@ -83,11 +86,5 @@ public class PremierFragment extends Fragment {
                 MainActivity.isIndeterminate.set(false);
             }
         });
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
     }
 }

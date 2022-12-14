@@ -50,7 +50,7 @@ public class TopFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null)
                 {
                     films = response.body().getFilms();
-                    adapter = new TopAdapter(requireContext(), films);
+                    adapter = new TopAdapter(getContext(), films);
                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
                     linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                     filmRecycler.setLayoutManager(linearLayoutManager);
