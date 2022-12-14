@@ -23,10 +23,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TopViewModel extends ViewModel {
+    private TopAdapter adapter;
     private final ApiInterface apiInterface = RepositoryBuilder.buildRequest().create(ApiInterface.class);
     private ArrayList<Film> films;
     private static TopViewModel instance;
-
     private TopViewModel(){}
 
     public static synchronized TopViewModel getInstance() {
@@ -44,7 +44,7 @@ public class TopViewModel extends ViewModel {
                 if (response.isSuccessful() && response.body() != null)
                 {
                     films = response.body().getFilms();
-                    TopAdapter adapter = new TopAdapter(context, films);
+                    adapter = new TopAdapter(context, films);
                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
                     linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                     filmRecycler.setLayoutManager(linearLayoutManager);
@@ -63,5 +63,13 @@ public class TopViewModel extends ViewModel {
                 Toast.makeText(context, t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    public ArrayList<Film> getFilms() {
+        return films;
+    }
+
+    public TopAdapter getAdapter() {
+        return adapter;
     }
 }

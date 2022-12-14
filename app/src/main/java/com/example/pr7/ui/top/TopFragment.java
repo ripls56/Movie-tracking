@@ -57,6 +57,8 @@ public class TopFragment extends Fragment {
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE){
+                    films = topViewModel.getFilms();
+                    adapter = topViewModel.getAdapter();
                     page++;
                     Call<Top> getTop = apiInterface.getTopFilms(page);
                     getTop.enqueue(new Callback<Top>() {
@@ -85,6 +87,7 @@ public class TopFragment extends Fragment {
         swipeRefreshLayout.setDistanceToTriggerSync(200);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             swipeRefreshLayout.setRefreshing(true);
+            page = 0;
             topViewModel.getTopList(page, getContext(), filmRecycler);
             swipeRefreshLayout.setRefreshing(false);
         });
